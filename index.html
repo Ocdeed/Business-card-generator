@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Card Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&family=Lora&family=Montserrat:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="input-section">
+        <form id="cardForm">
+          <div class="form-group">
+            <input type="text" id="name" required aria-label="Full name" />
+            <label for="name">Full Name</label>
+          </div>
+          <div class="form-group">
+            <input type="text" id="title" required aria-label="Job title" />
+            <label for="title">Job Title</label>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              id="company"
+              required
+              aria-label="Company name"
+            />
+            <label for="company">Company</label>
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              id="email"
+              required
+              aria-label="Email address"
+            />
+            <label for="email">Email</label>
+          </div>
+          <div class="form-group">
+            <input type="tel" id="phone" required aria-label="Phone number" />
+            <label for="phone">Phone</label>
+          </div>
+          <div class="form-group">
+            <input type="text" id="address" aria-label="Address" />
+            <label for="address">Address</label>
+          </div>
+          <div class="form-group">
+            <input type="url" id="website" aria-label="Website" />
+            <label for="website">Website</label>
+          </div>
+          <div class="logo-upload">
+            <label for="logo">
+              <div class="upload-area" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Drop logo here or click to upload</span>
+              </div>
+            </label>
+            <input type="file" id="logo" accept="image/*" hidden />
+          </div>
+          <button type="button" id="addField">Add Custom Field</button>
+          <div id="customFields"></div>
+        </form>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-container">
+          <div id="cardPreview" class="template-minimalist"></div>
+        </div>
+        <div class="customization-panel">
+          <div class="template-selection">
+            <label for="template">Card Style</label>
+            <select id="template" aria-label="Select template">
+              <option value="minimalist">Minimalist</option>
+              <option value="corporate">Corporate</option>
+              <option value="creative">Creative</option>
+              <option value="bold">Bold</option>
+              <option value="elegant">Elegant</option>
+              <option value="modern">Modern</option>
+              <option value="neon">Neon</option>
+              <option value="geometric">Geometric</option>
+            </select>
+          </div>
+
+          <div class="font-selection">
+            <label for="font">Typography</label>
+            <select id="font" aria-label="Select font">
+              <option value="Roboto">Roboto (Modern)</option>
+              <option value="Open Sans">Open Sans (Clean)</option>
+              <option value="Lora">Lora (Elegant)</option>
+              <option value="Montserrat">Montserrat (Professional)</option>
+              <option value="Playfair Display">Playfair (Classic)</option>
+              <option value="Poppins">Poppins (Contemporary)</option>
+              <option value="Times New Roman">
+                Times New Roman (Traditional)
+              </option>
+            </select>
+          </div>
+          <div class="color-scheme-presets">
+            <button
+              class="color-preset hover-lift"
+              onclick="applyColorScheme('professional')"
+              style="background: linear-gradient(45deg, #ffffff, #007bff)"
+            ></button>
+            <button
+              class="color-preset hover-lift"
+              onclick="applyColorScheme('creative')"
+              style="background: linear-gradient(45deg, #2c3e50, #e74c3c)"
+            ></button>
+            <button
+              class="color-preset hover-lift"
+              onclick="applyColorScheme('elegant')"
+              style="background: linear-gradient(45deg, #f8f9fa, gold)"
+            ></button>
+            <button
+              class="color-preset hover-lift"
+              onclick="applyColorScheme('modern')"
+              style="background: linear-gradient(45deg, #000000, #00ff00)"
+            ></button>
+          </div>
+          <div class="color-pickers">
+            <input
+              type="color"
+              id="bgColor"
+              value="#ffffff"
+              aria-label="Background color"
+            />
+            <input
+              type="color"
+              id="textColor"
+              value="#000000"
+              aria-label="Text color"
+            />
+            <input
+              type="color"
+              id="accentColor"
+              value="#007bff"
+              aria-label="Accent color"
+            />
+          </div>
+          <div class="logo-position">
+            <button type="button" data-position="left" aria-label="Logo left">
+              <i class="fas fa-align-left"></i>
+            </button>
+            <button
+              type="button"
+              data-position="center"
+              aria-label="Logo center"
+            >
+              <i class="fas fa-align-center"></i>
+            </button>
+            <button type="button" data-position="right" aria-label="Logo right">
+              <i class="fas fa-align-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="download-panel">
+          <select id="format" aria-label="Download format">
+            <option value="png">PNG (High Quality)</option>
+            <option value="jpg">JPG (Smaller Size)</option>
+          </select>
+          <button id="downloadBtn" class="download-button">
+            <i class="fas fa-download"></i> Download
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

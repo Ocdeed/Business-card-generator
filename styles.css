@@ -1,0 +1,500 @@
+:root {
+  --primary: #007bff;
+  --bg-dark: #1e1e1e;
+  --bg-light: #f5f5f5;
+  --text-dark: #333;
+  --text-light: #fff;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Form Styles */
+.input-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group label {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s;
+  pointer-events: none;
+  color: #666;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 0.8rem;
+  background: white;
+  padding: 0 0.3rem;
+}
+
+/* Preview Styles */
+.preview-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+#cardPreview {
+  width: 350px;
+  height: 200px;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.card-content {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "logo main qr"
+    "logo contact qr";
+  gap: 10px;
+  align-items: center;
+}
+
+.logo {
+  grid-area: logo;
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+}
+
+.logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.main-info {
+  grid-area: main;
+}
+
+.main-info h1 {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.main-info .title {
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.main-info .company {
+  font-size: 0.9rem;
+}
+
+.contact-info {
+  grid-area: contact;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-info p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-info i {
+  width: 14px;
+  text-align: center;
+}
+
+.qr-code-container {
+  grid-area: qr;
+  justify-self: end;
+}
+
+.qr-code {
+  width: 50px;
+  height: 50px;
+}
+
+/* Remove flip-related styles */
+.card-side,
+.card-back,
+#cardPreview.flipped {
+  display: none;
+}
+
+.card-front {
+  position: relative;
+}
+
+.card-front .logo {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+}
+
+.card-front .logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.card-front h1 {
+  font-size: 1.4rem;
+  margin-top: $ {
+    settings.logo?'70px': "0";
+  }
+  text-align: center;
+}
+
+.card-front p {
+  font-size: 1rem;
+  text-align: center;
+  margin: 4px 0;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.contact-info p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-info i {
+  width: 16px;
+  text-align: center;
+}
+
+.qr-code {
+  justify-self: end;
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+}
+
+[data-position="left"] ~ .logo {
+  left: 10px;
+  top: 10px;
+}
+[data-position="center"] ~ .logo {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+}
+[data-position="right"] ~ .logo {
+  right: 10px;
+  top: 10px;
+}
+
+/* Template Styles */
+.template-minimalist {
+  background: white;
+  padding: 20px;
+}
+
+.template-corporate {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+.template-creative {
+  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  padding: 20px;
+}
+
+.template-bold {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  padding: 20px;
+}
+
+.template-elegant {
+  background: linear-gradient(to right, #fff 0%, #f8f9fa 100%);
+  padding: 20px;
+  border: 2px solid gold;
+}
+
+.template-modern {
+  background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%);
+  color: var(--text-dark);
+  backdrop-filter: blur(5px);
+}
+
+.template-neon {
+  background: var(--bg-dark);
+  color: #fff;
+  text-shadow: 0 0 10px var(--primary);
+  box-shadow: 0 0 20px var(--primary);
+}
+
+.template-geometric {
+  background: linear-gradient(
+      45deg,
+      transparent 49%,
+      #ddd 49% 51%,
+      transparent 51%
+    ),
+    linear-gradient(-45deg, transparent 49%, #ddd 49% 51%, transparent 51%);
+  background-size: 20px 20px;
+}
+
+/* Customization Panel */
+.customization-panel {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.color-scheme-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.color-preset {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s;
+}
+
+.color-preset:hover {
+  transform: scale(1.1);
+}
+
+/* Download Button */
+.download-button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background: darken(var(--primary), 10%);
+}
+
+.download-panel {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.download-panel select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+}
+
+.download-panel select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Effects */
+.hover-lift {
+  transition: transform 0.2s;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Loading Animation */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Notification */
+.success-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .customization-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Template and Font Selection */
+.template-selection,
+.font-selection {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.template-selection label,
+.font-selection label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.template-selection select,
+.font-selection select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.template-selection select:hover,
+.font-selection select:hover {
+  border-color: var(--primary);
+}
+
+/* Preview font samples */
+#font option {
+  padding: 8px;
+}
+
+#font option[value="Roboto"] {
+  font-family: "Roboto", sans-serif;
+}
+#font option[value="Open Sans"] {
+  font-family: "Open Sans", sans-serif;
+}
+#font option[value="Lora"] {
+  font-family: "Lora", serif;
+}
+#font option[value="Montserrat"] {
+  font-family: "Montserrat", sans-serif;
+}
+#font option[value="Playfair Display"] {
+  font-family: "Playfair Display", serif;
+}
+#font option[value="Poppins"] {
+  font-family: "Poppins", sans-serif;
+}
