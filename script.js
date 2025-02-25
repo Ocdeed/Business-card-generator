@@ -143,12 +143,41 @@ function handleLogoUpload(e) {
 
 // Add QR code generation
 function generateQRCode(data) {
-  const qr = new QRCode(document.createElement("div"), {
-    text: data,
-    width: 64,
-    height: 64,
-  });
-  return qr._el.firstChild.toDataURL();
+  try {
+    const container = document.createElement("div");
+    const qr = new QRCode(container, {
+      text: data,
+      width: 64,
+      height: 64,
+      colorDark: settings.textColor,
+      colorLight: settings.bgColor === "#ffffff" ? "#ffffff" : "#f8f9fa",
+      correctLevel: QRCode.CorrectLevel.H,
+      quietZone: 2,
+      quietZoneColor: "transparent",
+    });
+
+    // Add subtle pattern to QR code
+    const canvas = container.querySelector("canvas");
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      ctx.globalCompositeOperation = "overlay";
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      gradient.addColorStop(0, `${settings.accentColor}22`);
+      gradient.addColorStop(1, "transparent");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    return container.firstChild.toDataURL();
+  } catch (error) {
+    console.error("QR Code generation failed:", error);
+    return null;
+  }
 }
 
 // Enhanced preview update
@@ -158,75 +187,72 @@ function updatePreview() {
   preview.style.fontFamily = settings.font;
 
   // Generate QR code
-  const contactInfo = `BEGIN:VCARD
-VERSION:3.0
-FN:${cardData.name}
-ORG:${cardData.company}
-TEL:${cardData.phone}
-EMAIL:${cardData.email}
-URL:${cardData.website}
-END:VCARD`;
-
+  const contactInfo = `BEGIN:VCARD\nVERSION:3.0\nFN:${cardData.name}\nORG:${cardData.company}\nTEL:${cardData.phone}\nEMAIL:${cardData.email}\nURL:${cardData.website}\nEND:VCARD`;
   const qrCodeURL = generateQRCode(contactInfo);
 
-  // Single side layout with all information
   preview.innerHTML = `
-      <div class="card-content">
-          ${
-            cardData.logo
-              ? `
-              <div class="logo" data-position="${settings.logoPos}">
-                  <img src="${cardData.logo}" alt="Logo">
-              </div>
-          `
-              : ""
-          }
-          
-          <div class="main-info">
-              <h1 style="color: ${settings.textColor}">${
+        <div class="card-content">
+            ${
+              cardData.logo
+                ? `
+                <div class="logo">
+                    <img src="${cardData.logo}" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            `
+                : ""
+            }
+            
+            <div class="main-info">
+                <h1 style="color: ${settings.textColor}">${
     cardData.name || "Your Name"
   }</h1>
-              <p class="title" style="color: ${settings.accentColor}">${
+                <p class="title" style="color: ${settings.accentColor}">${
     cardData.title || "Your Title"
   }</p>
-              <p class="company">${cardData.company || "Company Name"}</p>
-          </div>
+                <p class="company">${cardData.company || "Company Name"}</p>
+            </div>
 
-          <div class="contact-info">
-              ${
-                cardData.email
-                  ? `<p><i class="fas fa-envelope"></i> ${cardData.email}</p>`
-                  : ""
-              }
-              ${
-                cardData.phone
-                  ? `<p><i class="fas fa-phone"></i> ${cardData.phone}</p>`
-                  : ""
-              }
-              ${
-                cardData.address
-                  ? `<p><i class="fas fa-map-marker-alt"></i> ${cardData.address}</p>`
-                  : ""
-              }
-              ${
-                cardData.website
-                  ? `<p><i class="fas fa-globe"></i> ${cardData.website}</p>`
-                  : ""
-              }
-          </div>
+            <div class="contact-info">
+                ${
+                  cardData.email
+                    ? `<p><i class="fas fa-envelope"></i> ${cardData.email}</p>`
+                    : ""
+                }
+                ${
+                  cardData.phone
+                    ? `<p><i class="fas fa-phone"></i> ${cardData.phone}</p>`
+                    : ""
+                }
+                ${
+                  cardData.address
+                    ? `<p><i class="fas fa-map-marker-alt"></i> ${cardData.address}</p>`
+                    : ""
+                }
+                ${
+                  cardData.website
+                    ? `<p><i class="fas fa-globe"></i> ${cardData.website}</p>`
+                    : ""
+                }
+                ${getCustomFieldsHTML()}
+            </div>
 
-          ${
-            qrCodeURL
-              ? `<div class="qr-code-container">
-              <img src="${qrCodeURL}" alt="Contact QR Code" class="qr-code">
-          </div>`
-              : ""
-          }
-      </div>
-  `;
+            ${
+              qrCodeURL
+                ? `
+                <div class="qr-code-container">
+                    <img src="${qrCodeURL}" alt="Contact QR Code" class="qr-code">
+                    <span class="qr-tooltip">Scan for contact</span>
+                </div>
+            `
+                : ""
+            }
+        </div>
+    `;
+}
 
-  // Add custom fields to contact info
-  const customFieldsHTML = cardData.custom
+// Add helper function for custom fields HTML
+function getCustomFieldsHTML() {
+  return cardData.custom
     .map((field) => {
       let icon = "fa-star";
       switch (field.type) {
@@ -238,22 +264,17 @@ END:VCARD`;
           break;
       }
       return `
-        <p class="custom-field-preview">
-            <i class="fas ${icon}"></i>
-            ${
-              field.type === "link"
-                ? `<a href="${field.value}" target="_blank">${field.label}</a>`
-                : `${field.label}: ${field.value}`
-            }
-        </p>
-    `;
+            <p class="custom-field-preview">
+                <i class="fas ${icon}"></i>
+                ${
+                  field.type === "link"
+                    ? `<a href="${field.value}" target="_blank">${field.label}</a>`
+                    : `${field.label}: ${field.value}`
+                }
+            </p>
+        `;
     })
     .join("");
-
-  const contactInfoElement = preview.querySelector(".contact-info");
-  if (contactInfoElement) {
-    contactInfoElement.insertAdjacentHTML("beforeend", customFieldsHTML);
-  }
 }
 
 // Add color scheme presets
