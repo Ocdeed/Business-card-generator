@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSavedData();
   setupEventListeners();
   updatePreview();
+  setupCustomFields();
 });
 
 // Load saved data
@@ -223,6 +224,36 @@ END:VCARD`;
           }
       </div>
   `;
+
+  // Add custom fields to contact info
+  const customFieldsHTML = cardData.custom
+    .map((field) => {
+      let icon = "fa-star";
+      switch (field.type) {
+        case "link":
+          icon = "fa-link";
+          break;
+        case "social":
+          icon = "fa-share-alt";
+          break;
+      }
+      return `
+        <p class="custom-field-preview">
+            <i class="fas ${icon}"></i>
+            ${
+              field.type === "link"
+                ? `<a href="${field.value}" target="_blank">${field.label}</a>`
+                : `${field.label}: ${field.value}`
+            }
+        </p>
+    `;
+    })
+    .join("");
+
+  const contactInfoElement = preview.querySelector(".contact-info");
+  if (contactInfoElement) {
+    contactInfoElement.insertAdjacentHTML("beforeend", customFieldsHTML);
+  }
 }
 
 // Add color scheme presets
@@ -308,4 +339,112 @@ function showDownloadSuccess() {
   notification.textContent = "Card Downloaded!";
   document.body.appendChild(notification);
   setTimeout(() => notification.remove(), 3000);
+}
+
+// Add custom fields functionality
+function setupCustomFields() {
+  const addFieldBtn = document.getElementById("addField");
+  const customFieldsContainer = document.getElementById("customFields");
+
+  addFieldBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Custom Field';
+
+  addFieldBtn.addEventListener("click", () => {
+    const fieldId = `custom-${Date.now()}`;
+    const fieldHTML = `
+          <div class="custom-field" id="${fieldId}">
+              <div class="custom-field-header">
+                  <input type="text" 
+                         class="custom-field-label" 
+                         placeholder="Field Label"
+                         aria-label="Custom field label">
+                  <button type="button" class="delete-field" aria-label="Delete field">
+                      <i class="fas fa-times"></i>
+                  </button>
+              </div>
+              <div class="custom-field-type">
+                  <button type="button" class="field-type active" data-type="text">
+                      <i class="fas fa-font"></i> Text
+                  </button>
+                  <button type="button" class="field-type" data-type="link">
+                      <i class="fas fa-link"></i> Link
+                  </button>
+                  <button type="button" class="field-type" data-type="social">
+                      <i class="fas fa-share-alt"></i> Social
+                  </button>
+              </div>
+              <input type="text" 
+                     class="custom-field-value" 
+                     placeholder="Field Value"
+                     aria-label="Custom field value">
+          </div>
+      `;
+
+    customFieldsContainer.insertAdjacentHTML("beforeend", fieldHTML);
+
+    // Setup new field event listeners
+    const newField = document.getElementById(fieldId);
+    setupCustomFieldListeners(newField);
+  });
+}
+
+function setupCustomFieldListeners(fieldElement) {
+  const typeButtons = fieldElement.querySelectorAll(".field-type");
+  const deleteBtn = fieldElement.querySelector(".delete-field");
+  const label = fieldElement.querySelector(".custom-field-label");
+  const value = fieldElement.querySelector(".custom-field-value");
+
+  // Type selection
+  typeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      typeButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      updateFieldType(value, btn.dataset.type);
+    });
+  });
+
+  // Delete field
+  deleteBtn.addEventListener("click", () => {
+    fieldElement.style.animation = "slideDown 0.3s ease-out reverse";
+    setTimeout(() => {
+      fieldElement.remove();
+      updatePreview();
+    }, 300);
+  });
+
+  // Update on input
+  [label, value].forEach((input) => {
+    input.addEventListener(
+      "input",
+      debounce(() => {
+        cardData.custom = getCustomFieldsData();
+        saveData();
+        updatePreview();
+      }, 300)
+    );
+  });
+}
+
+function updateFieldType(input, type) {
+  switch (type) {
+    case "link":
+      input.type = "url";
+      input.placeholder = "https://...";
+      break;
+    case "social":
+      input.type = "text";
+      input.placeholder = "@username";
+      break;
+    default:
+      input.type = "text";
+      input.placeholder = "Field Value";
+  }
+}
+
+function getCustomFieldsData() {
+  const fields = document.querySelectorAll(".custom-field");
+  return Array.from(fields).map((field) => ({
+    label: field.querySelector(".custom-field-label").value,
+    value: field.querySelector(".custom-field-value").value,
+    type: field.querySelector(".field-type.active").dataset.type,
+  }));
 }
