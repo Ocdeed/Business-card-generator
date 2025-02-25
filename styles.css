@@ -85,7 +85,7 @@ body {
   position: relative;
   box-shadow: var(--shadow);
   overflow: hidden;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
 }
@@ -96,9 +96,9 @@ body {
   grid-template-areas:
     "logo header header"
     "content content qr";
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 60px 1fr 64px;
   grid-template-rows: auto 1fr;
-  gap: 12px;
+  gap: 8px;
   position: relative;
 }
 
@@ -118,57 +118,68 @@ body {
 
 .main-info {
   grid-area: header;
-  padding-left: 10px;
+  padding-left: 5px;
   align-self: center;
 }
 
 .main-info h1 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 2px;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .main-info .title {
-  font-size: 0.9rem;
-  margin-bottom: 2px;
+  font-size: 0.85rem;
+  margin-bottom: 1px;
 }
 
 .main-info .company {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .contact-info {
   grid-area: content;
-  padding-top: 5px;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  padding-right: 10px;
   max-width: 100%;
 }
 
 .contact-info p {
-  margin: 0;
-  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .contact-info i {
-  width: 14px;
-  text-align: center;
+  width: 12px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+
+.contact-info a {
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .qr-code-container {
   grid-area: qr;
-  align-self: center;
+  align-self: flex-start;
   justify-self: end;
   margin-right: 5px;
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 50px;
+  height: 50px;
   transition: transform 0.3s ease, scale 0.3s ease;
+  margin-top: auto;
 }
 
 .qr-code {
@@ -636,7 +647,10 @@ body {
 
 /* Custom field preview styles */
 .custom-field-preview {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--text-dark);
   display: flex;
   align-items: center;

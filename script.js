@@ -180,74 +180,99 @@ function generateQRCode(data) {
   }
 }
 
-// Enhanced preview update
+function formatUrl(url) {
+  return url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+}
+
 function updatePreview() {
   const preview = document.getElementById("cardPreview");
   preview.className = `template-${settings.template}`;
   preview.style.fontFamily = settings.font;
 
-  // Generate QR code
+  // Generate QR code and prepare contact info
   const contactInfo = `BEGIN:VCARD\nVERSION:3.0\nFN:${cardData.name}\nORG:${cardData.company}\nTEL:${cardData.phone}\nEMAIL:${cardData.email}\nURL:${cardData.website}\nEND:VCARD`;
   const qrCodeURL = generateQRCode(contactInfo);
 
   preview.innerHTML = `
-        <div class="card-content">
-            ${
-              cardData.logo
-                ? `
-                <div class="logo">
-                    <img src="${cardData.logo}" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                </div>
-            `
-                : ""
-            }
-            
-            <div class="main-info">
-                <h1 style="color: ${settings.textColor}">${
+      <div class="card-content">
+          ${
+            cardData.logo
+              ? `
+              <div class="logo">
+                  <img src="${cardData.logo}" alt="Logo">
+              </div>
+          `
+              : ""
+          }
+          
+          <div class="main-info">
+              <h1 style="color: ${settings.textColor}">${
     cardData.name || "Your Name"
   }</h1>
-                <p class="title" style="color: ${settings.accentColor}">${
+              <p class="title" style="color: ${settings.accentColor}">${
     cardData.title || "Your Title"
   }</p>
-                <p class="company">${cardData.company || "Company Name"}</p>
-            </div>
+              <p class="company">${cardData.company || "Company Name"}</p>
+          </div>
 
-            <div class="contact-info">
-                ${
-                  cardData.email
-                    ? `<p><i class="fas fa-envelope"></i> ${cardData.email}</p>`
-                    : ""
-                }
-                ${
-                  cardData.phone
-                    ? `<p><i class="fas fa-phone"></i> ${cardData.phone}</p>`
-                    : ""
-                }
-                ${
-                  cardData.address
-                    ? `<p><i class="fas fa-map-marker-alt"></i> ${cardData.address}</p>`
-                    : ""
-                }
-                ${
-                  cardData.website
-                    ? `<p><i class="fas fa-globe"></i> ${cardData.website}</p>`
-                    : ""
-                }
-                ${getCustomFieldsHTML()}
-            </div>
+          <div class="contact-info">
+              ${
+                cardData.email
+                  ? `
+                  <p title="${cardData.email}">
+                      <i class="fas fa-envelope"></i>
+                      <span>${cardData.email}</span>
+                  </p>
+              `
+                  : ""
+              }
+              ${
+                cardData.phone
+                  ? `
+                  <p title="${cardData.phone}">
+                      <i class="fas fa-phone"></i>
+                      <span>${cardData.phone}</span>
+                  </p>
+              `
+                  : ""
+              }
+              ${
+                cardData.address
+                  ? `
+                  <p title="${cardData.address}">
+                      <i class="fas fa-map-marker-alt"></i>
+                      <span>${cardData.address}</span>
+                  </p>
+              `
+                  : ""
+              }
+              ${
+                cardData.website
+                  ? `
+                  <p title="${cardData.website}">
+                      <i class="fas fa-globe"></i>
+                      <a href="${cardData.website}" target="_blank">${formatUrl(
+                      cardData.website
+                    )}</a>
+                  </p>
+              `
+                  : ""
+              }
+              ${getCustomFieldsHTML()}
+          </div>
 
-            ${
-              qrCodeURL
-                ? `
-                <div class="qr-code-container">
-                    <img src="${qrCodeURL}" alt="Contact QR Code" class="qr-code">
-                    <span class="qr-tooltip">Scan for contact</span>
-                </div>
-            `
-                : ""
-            }
-        </div>
-    `;
+          ${
+            qrCodeURL
+              ? `
+              <div class="qr-code-container">
+                  <img src="${qrCodeURL}" alt="Contact QR Code" class="qr-code">
+                  <span class="qr-tooltip">Scan for contact</span>
+              </div>
+          `
+              : ""
+          }
+      </div>
+  `;
 }
 
 // Add helper function for custom fields HTML
@@ -264,15 +289,15 @@ function getCustomFieldsHTML() {
           break;
       }
       return `
-            <p class="custom-field-preview">
-                <i class="fas ${icon}"></i>
-                ${
-                  field.type === "link"
-                    ? `<a href="${field.value}" target="_blank">${field.label}</a>`
-                    : `${field.label}: ${field.value}`
-                }
-            </p>
-        `;
+        <p class="custom-field-preview" title="${field.label}: ${field.value}">
+            <i class="fas ${icon}"></i>
+            ${
+              field.type === "link"
+                ? `<a href="${field.value}" target="_blank">${field.label}</a>`
+                : `<span>${field.label}: ${field.value}</span>`
+            }
+        </p>
+    `;
     })
     .join("");
 }
